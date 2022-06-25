@@ -6,5 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'fitness-tracker';
+	title = 'fitness-tracker';
+	sideNavOpen = false;
+
 }
