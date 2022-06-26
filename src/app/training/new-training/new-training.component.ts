@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Exercise } from '../exercise.model';
 import { TrainingService } from '../training.service';
 
@@ -9,6 +9,7 @@ import { TrainingService } from '../training.service';
 })
 export class NewTrainingComponent implements OnInit {
 
+	@ViewChild('selectedExercise') selectedExercise!: any;
 	@Output() trainingStarts = new EventEmitter<void>();
 	exercises!: Exercise[];
 
@@ -19,7 +20,8 @@ export class NewTrainingComponent implements OnInit {
   	}
 
 	toggleCurrentTraining () {
-		this.trainingStarts.emit()
+		console.log({selectedExercise: this.selectedExercise._value});
+		this.trainingService.startExercise(this.selectedExercise._value);
 	}
 
 }
