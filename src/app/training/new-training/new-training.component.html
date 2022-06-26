@@ -5,17 +5,14 @@
 		<mat-card-content fxLayoutAlign="center">
 			<mat-form-field appearance="fill">
 				<mat-label>Select</mat-label>
-				<mat-select>
-					<mat-option value="crunches">Crunches</mat-option>
-					<mat-option value="touch-toes">Touch toes</mat-option>
-					<mat-option value="side-lunges">Side Lunges</mat-option>
-					<mat-option value="hip-trust">Hip Trust</mat-option>
+				<mat-select #selected>
+					<mat-option *ngFor="let exercise of exercises" value="{{ exercise.id }}">{{ exercise.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
 		</mat-card-content>
 
 		<mat-card-actions fxLayoutAlign="center">
-			<button type="submit" mat-button (click)="toggleCurrentTraining()">Start</button>
+			<button type="submit" mat-raised-button color="primary" [disabled]="!selected.value" (click)="toggleCurrentTraining()">Start</button>
 		</mat-card-actions>
 	</mat-card>
 </section>
