@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Exercise } from '../exercise.model';
 import { TrainingService } from '../training.service';
@@ -21,23 +21,29 @@ export class CurrentTrainingComponent implements OnInit {
 
 	subscription!: Subscription;
 
-	@Output() trainingExit = new EventEmitter<void>();
-
 	ngOnInit(): void {
 		this.startOrContinue();
 	}
 
 	startOrContinue() {
-		// duration of training devided by 100 (percent) multiple by 1000 (ms)
-		const step = this.trainingService.getRunningExercise().duration / 100 * 1000;
-		this.interval = setInterval(() => {
-			this.progress += 1;
-			if (this.progress >= 100) {
-				this.status = 'Your workout is done. Well done!';
-				clearInterval(this.interval);
-				return;
-			}
-		}, step);
+		if (!this.trainingService.getRunningExercise()?.duration) {
+			return;
+		}
+		const runningExercise = this.trainingService.getRunningExercise();
+
+		if (runningExercise?.duration) {
+			// duration of training devided by 100 (percent) multiple by 1000 (ms)
+			const step = runningExercise?.duration / 100 * 1000;
+			this.interval = setInterval(() => {
+				this.progress += 1;
+				if (this.progress >= 100) {
+					this.trainingService.completedExercise();
+					this.status = 'Your workout is done. Well done!';
+					clearInterval(this.interval);
+					return;
+				}
+			}, step);
+		}
 	}
 
 	stopTraining () {
@@ -48,7 +54,7 @@ export class CurrentTrainingComponent implements OnInit {
 
 		dialogResult.afterClosed().subscribe(result => {
 			if (result) {
-				this.trainingExit.emit();
+				this.trainingService.cancelledExercise(this.progress);
 				return;
 			}
 
