@@ -15,7 +15,7 @@
 	</a>
 
 	<mat-list-item *ngIf="isLogged">
-		<button mat-icon-button>
+		<button mat-icon-button (click)="onLogout()">
 			<mat-icon>logout</mat-icon>
 			<span class="nav-caption">Logout</span>
 		</button>
