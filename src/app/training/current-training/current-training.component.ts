@@ -1,5 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Exercise } from '../exercise.model';
+import { TrainingService } from '../training.service';
+
+import { Subscription } from 'rxjs';
 
 import { StopTrainingComponent } from './stop-training/stop-training.component';
 @Component({
@@ -8,10 +12,15 @@ import { StopTrainingComponent } from './stop-training/stop-training.component';
   styleUrls: ['./current-training.component.css']
 })
 export class CurrentTrainingComponent implements OnInit {
-	constructor(private dialog: MatDialog) { }
+	constructor(private dialog: MatDialog, private trainingService: TrainingService) { }
+
 	interval: any;
 	progress = 0;
 	status = 'Keep going!';
+	selectedExercise!: Exercise;
+
+	subscription!: Subscription;
+
 	@Output() trainingExit = new EventEmitter<void>();
 
 	ngOnInit(): void {
@@ -19,14 +28,16 @@ export class CurrentTrainingComponent implements OnInit {
 	}
 
 	startOrContinue() {
+		// duration of training devided by 100 (percent) multiple by 1000 (ms)
+		const step = this.trainingService.getRunningExercise().duration / 100 * 1000;
 		this.interval = setInterval(() => {
-			this.progress += 5;
-			if (this.progress == 100) {
+			this.progress += 1;
+			if (this.progress >= 100) {
 				this.status = 'Your workout is done. Well done!';
 				clearInterval(this.interval);
 				return;
 			}
-		}, 1000);
+		}, step);
 	}
 
 	stopTraining () {
