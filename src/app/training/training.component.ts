@@ -12,14 +12,19 @@ import { Subscription } from 'rxjs';
 export class TrainingComponent implements OnInit, OnDestroy {
 	ongoingTraining = false;
 	subscription!: Subscription;
-	runningExercise!: Exercise;
+	runningExercise!: Exercise | null;
 
   	constructor(private trainingService: TrainingService) { }
 
   	ngOnInit(): void {
-		this.subscription = this.trainingService.exerciseStarted.subscribe((exercise: Exercise) => {
-			this.ongoingTraining = true;
-			this.runningExercise = exercise;
+		this.subscription = this.trainingService.exerciseStarted.subscribe((exercise: Exercise | null) => {
+			if (exercise) {
+				this.ongoingTraining = true;
+				this.runningExercise = exercise;
+			} else {
+				this.ongoingTraining = false;
+				this.runningExercise = null;
+			}
 		});
   	}
 
