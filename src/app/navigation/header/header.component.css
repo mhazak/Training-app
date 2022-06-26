@@ -3,7 +3,7 @@ a {
 	color: white;
 }
 
-a:hover, a:focus { text: lightgrey; }
+a:hover, a:focus { color: lightgrey; }
 
 .navigation-items {
 	list-style: none;
