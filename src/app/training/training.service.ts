@@ -53,14 +53,14 @@ export class TrainingService {
 
 	completedExercise() {
 		if (this.runningExercise)
-			this.completedExercises.push({...this.runningExercise, date: new Date, state: 'completed' });
+			this.finishedExercises({...this.runningExercise, date: new Date, state: 'completed' });
 		this.runningExercise = null;
 		this.exerciseStarted.next(null);
 	}
 
 	cancelledExercise(progress: number) {
 		if (this.runningExercise)
-			this.completedExercises.push({...this.runningExercise, duration: this.runningExercise.duration * (progress / 100), calories: this.runningExercise.calories * (progress / 100), date: new Date, state: 'cancelled' });
+			this.finishedExercises({...this.runningExercise, duration: this.runningExercise.duration * (progress / 100), calories: this.runningExercise.calories * (progress / 100), date: new Date, state: 'cancelled' });
 		this.runningExercise = null;
 		this.exerciseStarted.next(null);
 	}
@@ -71,5 +71,9 @@ export class TrainingService {
 
 	getExerciseHistory () {
 		return this.completedExercises.slice();
+	}
+
+	private finishedExercises(exercise: Exercise) {
+		this.db.collection('finishedExercises').add(exercise);
 	}
 }
