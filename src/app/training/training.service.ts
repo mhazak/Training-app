@@ -13,6 +13,7 @@ export class TrainingService {
 
 	exerciseStarted = new Subject<Exercise | null>();
 	exerciseChanged = new Subject<Exercise[]>();
+	completedExercisesChanged = new Subject<Exercise[]>();
 
 	private completedExercises: Exercise[] = [];
 	private runningExercise!: Exercise | null;
@@ -65,7 +66,26 @@ export class TrainingService {
 	}
 
 	getExerciseHistory () {
-		return this.completedExercises.slice();
+		this.db
+			.collection('finishedExercises')
+			.snapshotChanges()
+			.pipe(
+				map(data => {
+					return data.map(x => {
+						return {
+							id: x.payload.doc.id,
+							name: x.payload.doc.data()['name'],
+							duration: x.payload.doc.data()['duration'],
+							calories: x.payload.doc.data()['calories'],
+							// exerciseid: x.payload.doc.data()['id'],
+							date: x.payload.doc.data()['date'],
+							state: x.payload.doc.data()['state']
+						}
+					})
+				})
+			).subscribe((result: Exercise[]) => {
+				this.completedExercisesChanged.next(result);
+			})
 	}
 
 	private finishedExercises(exercise: Exercise) {
