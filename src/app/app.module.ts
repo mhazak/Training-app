@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { AngularFireModule } from '@angular/fire';
-import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -35,7 +34,6 @@ import { TrainingModule } from './training/training.module';
 	FlexLayoutModule,
 	FormsModule,
 	AngularFireModule.initializeApp(environment.firebase),
-	AngularFireAuthModule,
 	AuthModule,
 	TrainingModule
   ],
