@@ -3,19 +3,27 @@ import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { AuthData } from "./auth-data.model";
 import { User } from "./user.model";
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Injectable()
 export class AuthService {
 	authChange = new Subject<boolean>();
 	private user!: User | null;
 
-	constructor (private router: Router) {}
+	constructor (private router: Router, private auth: AngularFireAuth) {}
 
 	registerUser(authData: AuthData) {
-		this.user = {
-			email: authData.email,
-			id: '123'
-		}
+		this.auth
+			.auth
+			.createUserWithEmailAndPassword(authData.email, authData.password)
+			.then(res => {
+				console.log({res});
+				this.authSuccessfully();
+			})
+			.catch(err => {
+				console.log({err});
+			})
+
 
 		this.authSuccessfully();
 	}
