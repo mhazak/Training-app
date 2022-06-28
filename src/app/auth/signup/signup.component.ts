@@ -11,25 +11,26 @@ import { AuthService } from '../auth.service';
 })
 export class SignupComponent implements OnInit, OnDestroy {
 
-  constructor(private authService: AuthService, private uiservice: UIService) { }
+  	constructor(private authService: AuthService, private uiservice: UIService) { }
 
-  isLoading = false;
-  loadingSubscription: Subscription;
+	isLoading = false;
+	loadingSubscription: Subscription;
 
-  ngOnInit(): void {
-	this.loadingSubscription = this.uiservice.loadingStateChange.subscribe(isLoading => {
-		this.isLoading = isLoading;
-	})
-  }
+  	ngOnInit(): void {
+		this.loadingSubscription = this.uiservice.loadingStateChange.subscribe(isLoading => {
+			this.isLoading = isLoading;
+		})
+  	}
 
-  ngOnDestroy() {
-	  this.loadingSubscription.unsubscribe();
-  }
+	ngOnDestroy() {
+		if (this.loadingSubscription)
+			this.loadingSubscription.unsubscribe();
+  	}
 
-  onSubmit(form: NgForm) {
-	this.authService.registerUser({
-		email: form.value.email,
-		password: form.value.password
-	});
-  }
+	onSubmit(form: NgForm) {
+		this.authService.registerUser({
+			email: form.value.email,
+			password: form.value.password
+		});
+  	}
 }
