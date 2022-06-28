@@ -5,13 +5,18 @@ import { AuthData } from "./auth-data.model";
 import { AngularFireAuth } from '@angular/fire/auth';
 import { TrainingService } from "../training/training.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { UIService } from "../shared/ui.service";
 
 @Injectable()
 export class AuthService {
 	authChange = new Subject<boolean>();
 	private isAuthenticated = false;
 
-	constructor (private router: Router, private auth: AngularFireAuth, private trainingService: TrainingService, private snackbar: MatSnackBar) {}
+	constructor (private router: Router,
+		private auth: AngularFireAuth,
+		private trainingService: TrainingService,
+		private snackbar: MatSnackBar,
+		private uiservice: UIService) {}
 
 	initAuthListener () {
 		this.auth.authState.subscribe(user => {
@@ -29,12 +34,15 @@ export class AuthService {
 	}
 
 	registerUser(authData: AuthData) {
+		this.uiservice.loadingStateChange.next(true);
 		this.auth
 			.auth
 			.createUserWithEmailAndPassword(authData.email, authData.password)
 			.then(res => {
+				this.uiservice.loadingStateChange.next(false);
 			})
 			.catch(err => {
+				this.uiservice.loadingStateChange.next(false);
 				this.snackbar.open(err.message, null, {
 					duration: 3000
 				})
@@ -42,12 +50,15 @@ export class AuthService {
 	}
 
 	login(authData: AuthData) {
+		this.uiservice.loadingStateChange.next(true);
 		this.auth
 			.auth
 			.signInWithEmailAndPassword(authData.email, authData.password)
 			.then(res => {
+				this.uiservice.loadingStateChange.next(false);
 			})
 			.catch(err => {
+				this.uiservice.loadingStateChange.next(false);
 				this.snackbar.open(err.message, null, {
 					duration: 3000
 				})
