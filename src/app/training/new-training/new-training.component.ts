@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter, ViewChild, OnDestroy } from '@
 
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { UIService } from 'src/app/shared/ui.service';
 import { Exercise } from '../exercise.model';
 import { TrainingService } from '../training.service';
 
@@ -17,18 +18,22 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 	@Output() trainingStarts = new EventEmitter<void>();
 	exercises!: Exercise[];
 	subscription: Subscription;
+	isLoading = true;
+	loadingSubscription: Subscription;
 
-	constructor(private trainingService: TrainingService) { }
+	constructor(private trainingService: TrainingService, private uiservice: UIService) { }
 
   	ngOnInit(): void {
 		this.subscription = this.trainingService.exerciseChanged.subscribe((result: Exercise[]) => {
 			this.exercises = result;
 		});
+		this.loadingSubscription = this.uiservice.loadingStateChange.subscribe(isLoading => this.isLoading = isLoading);
 		this.trainingService.fetchExercises();
   	}
 
 	ngOnDestroy () {
 		this.subscription.unsubscribe();
+		this.loadingSubscription.unsubscribe();
 	}
 
 	startTraining (form: NgForm) {
