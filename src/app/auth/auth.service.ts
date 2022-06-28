@@ -29,11 +29,17 @@ export class AuthService {
 	}
 
 	login(authData: AuthData) {
-		this.user = {
-			email: authData.email,
-			id: '123'
-		}
-		this.authSuccessfully();
+		console.log({authData});
+		this.auth
+			.auth
+			.signInWithEmailAndPassword(authData.email, authData.password)
+			.then(res => {
+				console.log({res});
+				this.authSuccessfully();
+			})
+			.catch(err => {
+				console.log({err, email: authData.email, password: authData.password})
+			})
 	}
 
 	logout() {
