@@ -5,7 +5,8 @@ import { AuthGuard } from "../auth/auth.guard";
 import { TrainingComponent } from "./training.component";
 
 const routes: Routes = [
-	{ path: 'training', component: TrainingComponent, canActivate: [AuthGuard] },
+	// needs to be just "", because it is loaded lazily => there is path /training
+	{ path: '', component: TrainingComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
