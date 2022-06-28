@@ -1,5 +1,5 @@
 import { Exercise } from "./exercise.model";
-import { Observable, Subject, Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { map } from 'rxjs/operators';
 
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -17,7 +17,6 @@ export class TrainingService {
 	exerciseStarted = new Subject<Exercise | null>();
 	exerciseChanged = new Subject<Exercise[]>();
 	completedExercisesChanged = new Subject<Exercise[]>();
-
 
 	fetchExercises() {
 		this.uiservice.loadingStateChange.next(true);
@@ -39,6 +38,10 @@ export class TrainingService {
 				this.uiservice.loadingStateChange.next(false);
 				this.availableExercises = result;
 				this.exerciseChanged.next(result);
+			}, error => {
+				this.uiservice.loadingStateChange.next(false);
+				this.exerciseChanged.next(null);
+				this.uiservice.snackbarOpen(error.message, null, { duration: 3000 });
 			})
 		)
 	}
