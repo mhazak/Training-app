@@ -2,9 +2,9 @@
 	<form fxLayout="column" fxLayoutAlign="center center" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
 		<mat-form-field>
-			<input type="email" matInput placeholder="E-mail" formControlName="login" required>
-			<mat-error *ngIf="!loginForm.get('login')?.value.length">Field can't be blank!</mat-error>
-			<mat-error *ngIf="loginForm.get('login')?.errors?.['email']">Email is invalid!</mat-error>
+			<input type="email" matInput placeholder="E-mail" formControlName="email" required>
+			<mat-error *ngIf="!loginForm.get('email')?.value.length">Field can't be blank!</mat-error>
+			<mat-error *ngIf="loginForm.get('email')?.errors?.['email']">Email is invalid!</mat-error>
 			<mat-hint>Please type your e-mail address</mat-hint>
 		</mat-form-field>
 
