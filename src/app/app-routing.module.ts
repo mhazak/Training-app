@@ -5,7 +5,8 @@ import { AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
 	{ path: '', component: WelcomeComponent },
-	{ path: 'training', loadChildren: () => import('./training/training.module').then(x => x.TrainingModule) }
+	// canLoad checks before component is loaded - via lazyloading its better solution than use canActivate inside training-routing.module
+	{ path: 'training', loadChildren: () => import('./training/training.module').then(x => x.TrainingModule), canLoad: [AuthGuard] }
 ];
 
 @NgModule({
