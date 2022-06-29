@@ -1,15 +1,17 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
 
 import { NgForm } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { UIService } from 'src/app/shared/ui.service';
+import { Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
 import { Exercise } from '../exercise.model';
 import { TrainingService } from '../training.service';
 
+import * as fromRoot from '../../app.reducer';
+
 @Component({
-  selector: 'app-new-training',
-  templateUrl: './new-training.component.html',
-  styleUrls: ['./new-training.component.css']
+	selector: 'app-new-training',
+	templateUrl: './new-training.component.html',
+	styleUrls: ['./new-training.component.css']
 })
 
 export class NewTrainingComponent implements OnInit, OnDestroy {
@@ -18,16 +20,17 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 	@Output() trainingStarts = new EventEmitter<void>();
 	exercises!: Exercise[];
 	subscription: Subscription;
-	isLoading = true;
+	isLoading$: Observable<boolean>;
 	loadingSubscription: Subscription;
 
-	constructor(private trainingService: TrainingService, private uiservice: UIService) { }
+	constructor(private trainingService: TrainingService, private store: Store<fromRoot.State>) { }
 
-  	ngOnInit(): void {
+	ngOnInit(): void {
+
+		this.isLoading$ = this.store.select(fromRoot.getIsLoading);
 		this.subscription = this.trainingService.exerciseChanged.subscribe((result: Exercise[]) => {
 			this.exercises = result;
 		});
-		this.loadingSubscription = this.uiservice.loadingStateChange.subscribe(isLoading => this.isLoading = isLoading);
 		this.fetchExercises();
   	}
 
@@ -38,12 +41,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 	ngOnDestroy () {
 		if (this.subscription)
 			this.subscription.unsubscribe();
-		if (this.loadingSubscription)
-			this.loadingSubscription.unsubscribe();
 	}
 
 	startTraining (form: NgForm) {
 		this.trainingService.startExercise(form.value.selectedExercise);
 	}
-
 }

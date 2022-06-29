@@ -23,8 +23,8 @@
 			Agree with Terms and Conditions
 		</mat-checkbox>
 
-		<button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" style="margin-top: 1rem;" [disabled]="f.invalid">Sign Up</button>
-		<mat-spinner *ngIf="isLoading"></mat-spinner>
+		<button *ngIf="!(isLoading$ | async)" type="submit" mat-raised-button color="primary" style="margin-top: 1rem;" [disabled]="f.invalid">Sign Up</button>
+		<mat-spinner *ngIf="isLoading$ | async"></mat-spinner>
 
 	</form>
 </section>
