@@ -5,6 +5,8 @@ import { AuthData } from "./auth-data.model";
 import { AngularFireAuth } from '@angular/fire/auth';
 import { TrainingService } from "../training/training.service";
 import { UIService } from "../shared/ui.service";
+import { Store } from "@ngrx/store";
+import * as fromApp from '../app.reducer';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +16,8 @@ export class AuthService {
 	constructor (private router: Router,
 		private auth: AngularFireAuth,
 		private trainingService: TrainingService,
-		private uiservice: UIService) {}
+		private uiservice: UIService,
+		private store: Store<{ui: fromApp.State}>) {}
 
 	initAuthListener () {
 		this.auth.authState.subscribe(user => {
@@ -32,29 +35,32 @@ export class AuthService {
 	}
 
 	registerUser(authData: AuthData) {
-		this.uiservice.loadingStateChange.next(true);
+		this.store.dispatch({ type: 'START_LOADING' });
 		this.auth
 			.auth
 			.createUserWithEmailAndPassword(authData.email, authData.password)
 			.then(res => {
-				this.uiservice.loadingStateChange.next(false);
+				this.store.dispatch({ type: 'STOP_LOADING' });
 			})
 			.catch(err => {
-				this.uiservice.loadingStateChange.next(false);
+				this.store.dispatch({ type: 'STOP_LOADING' });
+
 				this.uiservice.snackbarOpen(err.message, null, { duration: 3000 })
 			})
 	}
 
 	login(authData: AuthData) {
-		this.uiservice.loadingStateChange.next(true);
+		this.store.dispatch({ type: 'START_LOADING' });
 		this.auth
 			.auth
 			.signInWithEmailAndPassword(authData.email, authData.password)
 			.then(res => {
-				this.uiservice.loadingStateChange.next(false);
+				this.store.dispatch({ type: 'STOP_LOADING' });
+
 			})
 			.catch(err => {
-				this.uiservice.loadingStateChange.next(false);
+				this.store.dispatch({ type: 'STOP_LOADING' });
+
 				this.uiservice.snackbarOpen(err.message, null, { duration: 3000 })
 			})
 	}
