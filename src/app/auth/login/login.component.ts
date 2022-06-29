@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
-
-import { UIService } from 'src/app/shared/ui.service';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import * as fromRoot from '../../app.reducer';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -10,26 +10,19 @@ import { AuthService } from '../auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
 
-	isLoading = false;
-	loadingSubscription: Subscription;
+	isLoading$: Observable<boolean>;
 
 	loginForm = new FormGroup({
 		email: new FormControl('', [Validators.required, Validators.email]),
 		password: new FormControl('', Validators.required)
 	});
-	constructor(private authService: AuthService, private uiservice: UIService) { }
+	constructor(private authService: AuthService, private store: Store<fromRoot.State>) { }
 
   	ngOnInit(): void {
-		this.loadingSubscription = this.uiservice.loadingStateChange.subscribe(isLoading => {
-			this.isLoading = isLoading;
-		})
+		this.isLoading$ = this.store.select(fromRoot.getIsLoading);
   	}
-
-	ngOnDestroy() {
-		this.loadingSubscription.unsubscribe();
-	}
 
 	onSubmit() {
 		this.authService.login({

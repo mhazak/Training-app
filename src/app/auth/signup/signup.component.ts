@@ -1,35 +1,29 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { UIService } from 'src/app/shared/ui.service';
+import { Observable } from 'rxjs';
 import { AuthService } from '../auth.service';
+import * as fromRoot from '../../app.reducer';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
-export class SignupComponent implements OnInit, OnDestroy {
+export class SignupComponent implements OnInit {
 
-  constructor(private authService: AuthService, private uiservice: UIService) { }
+  	constructor(private authService: AuthService, private store: Store<fromRoot.State>) { }
 
-  isLoading = false;
-  loadingSubscription: Subscription;
+	isLoading$: Observable<boolean>;
 
-  ngOnInit(): void {
-	this.loadingSubscription = this.uiservice.loadingStateChange.subscribe(isLoading => {
-		this.isLoading = isLoading;
-	})
-  }
+  	ngOnInit(): void {
+		this.isLoading$ = this.store.select(fromRoot.getIsLoading);
+  	}
 
-  ngOnDestroy() {
-	  this.loadingSubscription.unsubscribe();
-  }
-
-  onSubmit(form: NgForm) {
-	this.authService.registerUser({
-		email: form.value.email,
-		password: form.value.password
-	});
-  }
+	onSubmit(form: NgForm) {
+		this.authService.registerUser({
+			email: form.value.email,
+			password: form.value.password
+		});
+  	}
 }
