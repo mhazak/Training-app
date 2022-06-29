@@ -5,10 +5,10 @@
 
 	<div fxFlex fxLayout fxLayoutAlign="flex-end" fxHide.xs>
 		<ul fxLayout fxLayoutGap="1rem" class="navigation-items">
-			<li *ngIf="!isLogged"><a routerLink="/signup">Sign up</a></li>
-			<li *ngIf="!isLogged"><a routerLink="/login">Login</a></li>
-			<li *ngIf="isLogged"><a routerLink="/training">Training</a></li>
-			<li *ngIf="isLogged" (click)="onLogout()"><a>Logout</a></li>
+			<li *ngIf="!(isLogged$ | async)"><a routerLink="/signup">Sign up</a></li>
+			<li *ngIf="!(isLogged$ | async)"><a routerLink="/login">Login</a></li>
+			<li *ngIf="isLogged$ | async"><a routerLink="/training">Training</a></li>
+			<li *ngIf="isLogged$ | async" (click)="onLogout()"><a>Logout</a></li>
 		</ul>
 	</div>
 
