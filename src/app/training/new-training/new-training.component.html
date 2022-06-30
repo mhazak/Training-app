@@ -7,7 +7,7 @@
 			<mat-card-content fxLayoutAlign="center">
 
 				<mat-form-field *ngIf="(!(isLoading$ | async) && exercises$ | async)" appearance="fill">
-					<mat-label>Select</mat-label>
+					<mat-label>Select </mat-label>
 					<mat-select ngModel name="selectedExercise">
 						<mat-option *ngFor="let exercise of exercises$ | async" value="{{ exercise.id }}">{{ exercise.name }}</mat-option>
 					</mat-select>
