@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/cor
 
 import { NgForm } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Exercise } from '../exercise.model';
 import { TrainingService } from '../training.service';
 
@@ -20,9 +20,7 @@ export class NewTrainingComponent implements OnInit {
 	@ViewChild('selectedExercise') selectedExercise!: any;
 	@Output() trainingStarts = new EventEmitter<void>();
 	exercises$: Observable<Exercise[]>;
-	subscription: Subscription;
 	isLoading$: Observable<boolean>;
-	loadingSubscription: Subscription;
 
 	constructor(private trainingService: TrainingService, private store: Store<fromTraining.State>) { }
 
