@@ -1,6 +1,6 @@
 import { Exercise } from "./exercise.model";
 import { Subscription } from "rxjs";
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { Store } from "@ngrx/store";
 import * as fromTraining from './training.reducer';
 import * as UI from '../shared/ui.actions';
@@ -14,7 +14,6 @@ import { UIService } from "../shared/ui.service";
 export class TrainingService {
 	constructor (private db: AngularFirestore, private uiservice: UIService, private store: Store<fromTraining.State>) {}
 
-	private availableExercises: Exercise[] = [];
 	private runningExercise!: Exercise | null;
 
 	dbSubscription: Subscription[] = [];
@@ -51,19 +50,17 @@ export class TrainingService {
 	}
 
 	completedExercise() {
-		if (this.runningExercise)
-			this.finishedExercises({...this.runningExercise, date: new Date, state: 'completed' });
-		this.store.dispatch(new Training.StopTraining());
+		this.store.select(fromTraining.getActiveTraining).pipe(take(1)).subscribe(training => {
+			this.finishedExercises({...training, date: new Date, state: 'completed' });
+			this.store.dispatch(new Training.StopTraining());
+		})
 	}
 
 	cancelledExercise(progress: number) {
-		if (this.runningExercise)
-			this.finishedExercises({...this.runningExercise, duration: this.runningExercise.duration * (progress / 100), calories: this.runningExercise.calories * (progress / 100), date: new Date, state: 'cancelled' });
-		this.store.dispatch(new Training.StopTraining());
-	}
-
-	getRunningExercise() {
-		return this.runningExercise;
+		this.store.select(fromTraining.getActiveTraining).pipe(take(1)).subscribe(training => {
+			this.finishedExercises({...training, duration: training.duration * (progress / 100), calories: training.calories * (progress / 100), date: new Date, state: 'cancelled' });
+			this.store.dispatch(new Training.StopTraining());
+		});
 	}
 
 	getExerciseHistory () {
