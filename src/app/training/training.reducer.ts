@@ -21,13 +21,13 @@ const initialState: TrainingState = {
 
 export function trainingReducer(state = initialState, action: TRActions.TrainingActions) {
 	switch (action.type) {
-		case TRActions.SET_AVAILABLE_TRAININGS:
+		case TRActions.SET_AVAILABLE_EXERCISES:
 			return {
 				...state,
 				availableExercises: action.payload
 			};
 
-		case TRActions.SET_FINISHED_TRAININGS:
+		case TRActions.SET_FINISHED_EXERCISES:
 			return {
 				...state,
 				finishedExercises: action.payload
@@ -36,7 +36,7 @@ export function trainingReducer(state = initialState, action: TRActions.Training
 		case TRActions.START_TRAINING:
 			return {
 				...state,
-				activeTraining: action.payload
+				activeTraining: state.availableExercises.find(x => x.id == action.payload)
 			 };
 
 		case TRActions.STOP_TRAINING:
