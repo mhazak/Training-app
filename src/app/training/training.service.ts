@@ -12,9 +12,8 @@ import { UIService } from "../shared/ui.service";
 
 @Injectable()
 export class TrainingService {
-	constructor (private db: AngularFirestore, private uiservice: UIService, private store: Store<fromTraining.State>) {}
 
-	private runningExercise!: Exercise | null;
+	constructor (private db: AngularFirestore, private uiservice: UIService, private store: Store<fromTraining.State>) {}
 
 	dbSubscription: Subscription[] = [];
 
