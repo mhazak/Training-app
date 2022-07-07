@@ -1,6 +1,4 @@
-import { Action } from "rxjs/internal/scheduler/Action";
 import { AuthActions, SET_AUTH, SET_NON_AUTH } from "./auth.actions";
-
 
 export interface State {
 	isAuthenticated: boolean;
